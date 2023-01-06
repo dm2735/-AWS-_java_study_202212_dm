@@ -1,6 +1,20 @@
 # Compiled class file
 *.class
 
+
+#[IDE] Eclipse IDE, STS4, Intellij
+.settings
+.tagetr
+.bin
+
+.classpath
+.factorypath
+.project
+
+
+.idea
+
+
 # Log file
 *.log
 
