@@ -1,4 +1,4 @@
-package windowBuilder;
+package 연습;
 
 public class 연습Main {
 
