@@ -5,28 +5,42 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.google.gson.JsonObject;
+
+import usermanagement.service.UserService;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JToggleButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.swing.JButton;
 
-public class user extends JFrame {
+public class UserManagementFrame extends JFrame {
+	
+	private List<JTextField> loginFields;
+	private List<JTextField> registerFields;
 	
 	private CardLayout mainCard;
 	private JPanel mainPanel;
 	private JTextField usernamefield;
 	private JPasswordField passwordField;
-	private JPasswordField registerUsernamedField;
 	private JTextField registerNameField;
 	private JTextField registerEmailField;
 	private JPasswordField registerPasswordField;
-
+	private JTextField registerUsernameField;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -34,7 +48,7 @@ public class user extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					user frame = new user();
+					UserManagementFrame frame = new UserManagementFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -46,7 +60,10 @@ public class user extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public user() {
+	public UserManagementFrame() {
+		loginFields = new ArrayList<>();
+		registerFields = new ArrayList<>();
+		
 		setBackground(new Color(255, 255, 255));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 400, 500);
@@ -97,6 +114,14 @@ public class user extends JFrame {
 		loginPanel.add(passwordField);
 		
 		JToggleButton loginButton = new JToggleButton("Login");
+			
+		loginButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		
 		loginButton.setBounds(287, 217, 74, 38);
 		loginPanel.add(loginButton);
 		
@@ -110,6 +135,7 @@ public class user extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				mainCard.show(mainPanel, "registerPanel");
+				clearFields(loginFields);
 			}
 		});
 		signupLink.setForeground(new Color(0, 128, 255));
@@ -132,6 +158,7 @@ public class user extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				mainCard.show(mainPanel, "loginPanel");
+				clearFields(registerFields);
 			}
 			
 		});
@@ -159,10 +186,6 @@ public class user extends JFrame {
 		registerPasswordLabel.setBounds(51, 204, 119, 15);
 		registerPanel.add(registerPasswordLabel);
 		
-		registerUsernamedField = new JPasswordField();
-		registerUsernamedField.setBounds(51, 157, 263, 29);
-		registerPanel.add(registerUsernamedField);
-		
 		JLabel registerNameLabel = new JLabel("name");
 		registerNameLabel.setFont(new Font("굴림", Font.PLAIN, 15));
 		registerNameLabel.setBounds(50, 259, 96, 15);
@@ -188,7 +211,55 @@ public class user extends JFrame {
 		registerPanel.add(registerPasswordField);
 		
 		JButton registerButton = new JButton("Register");
+		
+		registerButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JsonObject userJson = new JsonObject();
+				userJson.addProperty("username", registerUsernameField.getText());
+				userJson.addProperty("password", registerPasswordField.getText());
+				userJson.addProperty("name", registerNameField.getText());
+				userJson.addProperty("email", registerEmailField.getText());
+								
+				UserService userService = UserService.getInstance();
+				
+				Map<String, String> response = userService.register(userJson.toString());
+				
+				if(response.containsKey("error")) {
+					JOptionPane.showMessageDialog(null, response.get("error"), "error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				JOptionPane.showMessageDialog(null, response.get("ok"),"ok",JOptionPane.INFORMATION_MESSAGE);
+				mainCard.show(mainPanel, "loginPanel");
+				clearFields(registerFields);
+																
+			} 
+		});
 		registerButton.setBounds(116, 391, 142, 37);
 		registerPanel.add(registerButton);
+		
+		registerUsernameField = new JTextField();
+		registerUsernameField.setColumns(10);
+		registerUsernameField.setBounds(52, 160, 262, 29);
+		registerPanel.add(registerUsernameField);
+		
+		loginFields.add(usernamefield);
+		loginFields.add(passwordField);
+
+		registerFields.add(registerUsernameField);
+		registerFields.add(registerPasswordField);
+		registerFields.add(registerNameField);
+		registerFields.add(registerEmailField);
+	}
+	
+	private void clearFields(List<JTextField> textFields) {
+		for(JTextField field : textFields) {
+			if(field.getText().isEmpty()) {
+				continue;
+			}
+			field.setText("");
+		}
+		
 	}
 }
