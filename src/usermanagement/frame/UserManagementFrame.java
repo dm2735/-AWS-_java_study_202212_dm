@@ -118,6 +118,21 @@ public class UserManagementFrame extends JFrame {
 		loginButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				//Json 텍스트가 된다.
+				
+				JsonObject loginUser = new JsonObject();
+				loginUser.addProperty("usernameAndEmail",usernamefield.getText());
+				loginUser.addProperty("password",passwordField.getText());
+				
+				UserService userService = UserService.getInstance();
+				
+				Map<String,String> response = userService.authorize(loginUser.toString());
+				
+				if(response.containsKey("error")) {
+					JOptionPane.showMessageDialog(null, response.get("error"),"error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				JOptionPane.showMessageDialog(null, response.get("OK"),"OK", JOptionPane.INFORMATION_MESSAGE);
 				
 			}
 		});
