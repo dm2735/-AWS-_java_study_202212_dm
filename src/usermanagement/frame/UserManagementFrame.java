@@ -34,7 +34,7 @@ public class UserManagementFrame extends JFrame {
 	
 	private CardLayout mainCard;
 	private JPanel mainPanel;
-	private JTextField usernamefield;
+	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JTextField registerNameField;
 	private JTextField registerEmailField;
@@ -94,10 +94,10 @@ public class UserManagementFrame extends JFrame {
 		loginText.setBounds(159, 73, 105, 48);
 		loginPanel.add(loginText);
 		
-		usernamefield = new JTextField();
-		usernamefield.setBounds(120, 181, 155, 38);
-		loginPanel.add(usernamefield);
-		usernamefield.setColumns(10);
+		usernameField = new JTextField();
+		usernameField.setBounds(120, 181, 155, 38);
+		loginPanel.add(usernameField);
+		usernameField.setColumns(10);
 		
 		JLabel usernameLabel = new JLabel("ID");
 		usernameLabel.setFont(new Font("굴림", Font.PLAIN, 15));
@@ -118,21 +118,21 @@ public class UserManagementFrame extends JFrame {
 		loginButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//Json 텍스트가 된다.
-				
-				JsonObject loginUser = new JsonObject();
-				loginUser.addProperty("usernameAndEmail",usernamefield.getText());
-				loginUser.addProperty("password",passwordField.getText());
-				
-				UserService userService = UserService.getInstance();
-				
-				Map<String,String> response = userService.authorize(loginUser.toString());
-				
-				if(response.containsKey("error")) {
-					JOptionPane.showMessageDialog(null, response.get("error"),"error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				JOptionPane.showMessageDialog(null, response.get("OK"),"OK", JOptionPane.INFORMATION_MESSAGE);
+			JsonObject loginUser = new JsonObject();
+			loginUser.addProperty("usernameOrEmail", usernameField.getText());	
+			loginUser.addProperty("password", passwordField.getText());
+			
+			UserService userService = UserService.getInstance();
+			
+			Map<String,String> response = userService.authorize(loginUser.toString());
+			
+			if(response.containsKey("error")) {
+				JOptionPane.showMessageDialog(null, response.get("error"),"error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			JOptionPane.showMessageDialog(null, response.get("OK"),"OK", JOptionPane.INFORMATION_MESSAGE);
+
+
 				
 			}
 		});
@@ -259,7 +259,7 @@ public class UserManagementFrame extends JFrame {
 		registerUsernameField.setBounds(52, 160, 262, 29);
 		registerPanel.add(registerUsernameField);
 		
-		loginFields.add(usernamefield);
+		loginFields.add(usernameField);
 		loginFields.add(passwordField);
 
 		registerFields.add(registerUsernameField);
