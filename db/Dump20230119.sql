@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `db_study2_explain` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `db_study2_explain`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: db_study2_explain
@@ -27,7 +29,6 @@ CREATE TABLE `course_mst` (
   `student_id` int NOT NULL,
   `lecture_id` int NOT NULL,
   `instructor_id` int NOT NULL,
-  `mento_id` int NOT NULL,
   PRIMARY KEY (`course_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -38,7 +39,7 @@ CREATE TABLE `course_mst` (
 
 LOCK TABLES `course_mst` WRITE;
 /*!40000 ALTER TABLE `course_mst` DISABLE KEYS */;
-INSERT INTO `course_mst` VALUES (1,1,1,1,1),(2,2,1,1,1),(3,3,2,2,2),(4,2,3,1,1);
+INSERT INTO `course_mst` VALUES (1,1,1,1),(2,2,1,1),(3,3,2,2),(4,1,3,3);
 /*!40000 ALTER TABLE `course_mst` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +52,7 @@ DROP TABLE IF EXISTS `instructor_mst`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `instructor_mst` (
   `instructor_id` int NOT NULL,
-  `instructor_name` varchar(45) DEFAULT NULL,
+  `instructor_name` varchar(45) NOT NULL,
   `university_id` int DEFAULT NULL,
   PRIMARY KEY (`instructor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -77,7 +78,7 @@ DROP TABLE IF EXISTS `lecture_mst`;
 CREATE TABLE `lecture_mst` (
   `lecture_id` int NOT NULL,
   `lecture_name` varchar(45) NOT NULL,
-  `lecture_price` varchar(45) NOT NULL,
+  `lecture_price` int NOT NULL,
   PRIMARY KEY (`lecture_id`,`lecture_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -88,7 +89,7 @@ CREATE TABLE `lecture_mst` (
 
 LOCK TABLES `lecture_mst` WRITE;
 /*!40000 ALTER TABLE `lecture_mst` DISABLE KEYS */;
-INSERT INTO `lecture_mst` VALUES (1,'java','100000'),(2,'python','80000'),(3,'c','90000');
+INSERT INTO `lecture_mst` VALUES (1,'java',100000),(2,'python',80000),(3,'c',90000);
 /*!40000 ALTER TABLE `lecture_mst` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,8 +126,8 @@ DROP TABLE IF EXISTS `student_mst`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `student_mst` (
   `student_id` int NOT NULL,
-  `student_name` varchar(45) NOT NULL,
-  `mento_id` int DEFAULT NULL,
+  `studnet_name` varchar(45) NOT NULL,
+  `mento_id` varchar(45) NOT NULL,
   PRIMARY KEY (`student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -137,7 +138,7 @@ CREATE TABLE `student_mst` (
 
 LOCK TABLES `student_mst` WRITE;
 /*!40000 ALTER TABLE `student_mst` DISABLE KEYS */;
-INSERT INTO `student_mst` VALUES (1,'김동민',1),(2,'김두영',1),(3,'정진원',2);
+INSERT INTO `student_mst` VALUES (1,'김동민','1'),(2,'김두영','1'),(3,'장진원','2');
 /*!40000 ALTER TABLE `student_mst` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +151,7 @@ DROP TABLE IF EXISTS `university_mst`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `university_mst` (
   `university_id` int NOT NULL,
-  `university_name` varchar(45) NOT NULL,
+  `univerisy_name` varchar(45) NOT NULL,
   PRIMARY KEY (`university_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -182,4 +183,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-19 17:36:42
+-- Dump completed on 2023-01-19 17:36:01
