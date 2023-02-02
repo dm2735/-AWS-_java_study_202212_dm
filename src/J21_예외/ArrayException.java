@@ -9,15 +9,15 @@ public class ArrayException {
 		Integer[] nums = {1,2,3,4,5};
 		
 		try {
-			throw new NullPointerException();
+//			throw new NullPointerException();
 			
-//			for(int i = 0; i<6; i++) {
-//			System.out.println(nums[i]);
-//			}
-		}catch (IndexOutOfBoundsException e) {     // runtimeofexception의 상속을 받고 있으면 unchecked exception
-			System.out.println("예외처리함");      // 바로 Exception의 상속을 받고 있으면 checked exception
+			for(int i = 0; i<6; i++) {
+			System.out.println(nums[i]);
+			}
+//		}catch (IndexOutOfBoundsException e) {     // runtimeofexception의 상속을 받고 있으면 unchecked exception
+//			System.out.println("예외처리함");      // 바로 Exception의 상속을 받고 있으면 checked exception
 		}catch ( NullPointerException e) {
-			System.out.println("빈값 처리함");
+			System.out.println("예외처리함"); 
 		}catch (Exception e) {
 			System.out.println("예상 못한 예외 처리함");
 		}

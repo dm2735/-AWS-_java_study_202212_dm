@@ -13,6 +13,6 @@ public class J09_StudentMain {
 		
 		s2.printInfo();
 				
-	}
+			}
 
 }

@@ -12,7 +12,7 @@ public class J11_StudentMain {
 		s1.printInfo();
 		
 		J11_StudentDefault s2 = new J11_StudentDefault();
-		
+	
 		
 		
 		System.out.println("이름 : " + s2.getName());
