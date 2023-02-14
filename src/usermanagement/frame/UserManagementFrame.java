@@ -6,8 +6,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import usermanagement.dto.RequestDto;
+import usermanagement.dto.ResponseDto;
 import usermanagement.service.UserService;
 
 import java.awt.CardLayout;
@@ -21,6 +24,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JToggleButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +39,13 @@ import java.util.Map;
 import javax.swing.JButton;
 
 public class UserManagementFrame extends JFrame {
+	
+	private static Socket socket;
+	private InputStream inputStream;
+	private OutputStream outputStream;
+	private BufferedReader reader;
+	private PrintWriter writer;
+	private Gson gson;
 	
 	private List<JTextField> loginFields;
 	private List<JTextField> registerFields;
@@ -47,12 +65,16 @@ public class UserManagementFrame extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try {			
+					socket = new Socket("127.0.0.1", 9090);
+
 					UserManagementFrame frame = new UserManagementFrame();
 					frame.setVisible(true);
+				} catch (ConnectException e) {
+					JOptionPane.showMessageDialog(null, "서버에 연결할 수 없습니다.","접속실패", JOptionPane.ERROR_MESSAGE);					
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				} 
 			}
 		});
 	}
@@ -61,6 +83,19 @@ public class UserManagementFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public UserManagementFrame() {
+		
+		try {
+			inputStream = socket.getInputStream();
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+			outputStream = socket.getOutputStream();
+			writer = new PrintWriter(outputStream, true);
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		gson = new Gson();
+		
 		loginFields = new ArrayList<>();
 		registerFields = new ArrayList<>();
 		
@@ -235,19 +270,30 @@ public class UserManagementFrame extends JFrame {
 				userJson.addProperty("password", registerPasswordField.getText());
 				userJson.addProperty("name", registerNameField.getText());
 				userJson.addProperty("email", registerEmailField.getText());
-								
-				UserService userService = UserService.getInstance();
 				
-				Map<String, String> response = userService.register(userJson.toString());
+				RequestDto<String> requestDto = new RequestDto<String>("register", userJson.toString());		
+				writer.println(gson.toJson(requestDto));
+				writer.flush();
 				
-				if(response.containsKey("error")) {
-					JOptionPane.showMessageDialog(null, response.get("error"), "error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				JOptionPane.showMessageDialog(null, response.get("ok"),"ok",JOptionPane.INFORMATION_MESSAGE);
-				mainCard.show(mainPanel, "loginPanel");
-				clearFields(registerFields);
+				try {
+					String response = reader.readLine();
+					System.out.println("응답옴");
+					System.out.println(response);
+					ResponseDto<?> responseDto = gson.fromJson(response, ResponseDto.class);
+					
+					if(responseDto.getCode().equals("error")){
+						JOptionPane.showMessageDialog(null, responseDto.getBody(),responseDto.getCode(), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					JOptionPane.showMessageDialog(null, responseDto.getBody(),responseDto.getCode(),JOptionPane.INFORMATION_MESSAGE);
+					mainCard.show(mainPanel, "loginPanel");
+					clearFields(registerFields);
+					
+	
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} 
 																
 			} 
 		});
