@@ -44,7 +44,7 @@ class ConnectedSocket extends Thread{
 		try {
 			inputStream = socket.getInputStream();
 			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-			
+				
 			while(true) {
 				String request = in.readLine(); // requestDto(JSON) 이 들어온다.
 				RequestDto requestDto = gson .fromJson(request, RequestDto.class);
@@ -54,6 +54,7 @@ class ConnectedSocket extends Thread{
 						JoinReqDto joinReqDto = gson.fromJson(requestDto.getBody(), JoinReqDto.class);
 						username = joinReqDto.getUsername();
 						List<String> connectedUsers = new ArrayList<>();
+						
 						for(ConnectedSocket connectedSocket : socketList) {
 							connectedUsers.add(connectedSocket.getUsername());
 						}
@@ -76,8 +77,12 @@ class ConnectedSocket extends Thread{
 							MessageRespDto messageRespDto = new MessageRespDto(message);
 							sendToUser(requestDto.getResource(), "ok", gson.toJson(messageRespDto),messageReqDto.getToUser());
 						}
+			
 							
 						break;
+					
+					
+						
 				}
 			}
 				

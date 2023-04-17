@@ -92,6 +92,7 @@ public class ChattingClient extends JFrame {
 		contentPane.add(ipInput);
 		ipInput.setColumns(10);
 		
+		
 		JButton connectButton = new JButton("연결");
 		connectButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -117,15 +118,14 @@ public class ChattingClient extends JFrame {
 					username = JOptionPane.showInputDialog(null, "사용자 이름을 입력해주세요.", "이름입력", JOptionPane.INFORMATION_MESSAGE);
 					JoinReqDto joinReqDto = new JoinReqDto(username);
 					String joinReqDtoJson = gson.toJson(joinReqDto);
+					
 					RequestDto requestDto = new RequestDto("join", joinReqDtoJson);
 					String requestDtoJson = gson.toJson(requestDto);
 					
 					OutputStream outputStream = socket.getOutputStream();
 					PrintWriter out = new PrintWriter(outputStream, true);
 					out.println(requestDtoJson);
-					
-					
-					
+										
 					
 				} catch (ConnectException e1) {
 					
@@ -139,8 +139,12 @@ public class ChattingClient extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			
-				connectButton.setVisible(false);
+				
+				connectButton.setEnabled(false);
+				connectButton.removeMouseListener(this);
+				ipInput.setEditable(false);
+				portInput.setEditable(false);
+				
 			}
 			
 		});
@@ -154,12 +158,15 @@ public class ChattingClient extends JFrame {
 		contentPane.add(portInput);
 		portInput.setColumns(10);
 		
+		
+		
 		JScrollPane contentScroll = new JScrollPane();
 		contentScroll.setBounds(12, 10, 353, 423);
 		contentPane.add(contentScroll);
 		
 		contentView = new JTextArea();
 		contentScroll.setViewportView(contentView);
+		contentView.setEditable(false);
 		
 		JScrollPane userListScroll = new JScrollPane();
 		userListScroll.setBounds(373, 49, 235, 384);
