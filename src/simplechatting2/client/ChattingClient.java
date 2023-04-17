@@ -92,7 +92,6 @@ public class ChattingClient extends JFrame {
 		contentPane.add(ipInput);
 		ipInput.setColumns(10);
 		
-		
 		JButton connectButton = new JButton("연결");
 		connectButton.addMouseListener(new MouseAdapter() {
 			@Override
